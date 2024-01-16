@@ -11,14 +11,14 @@ public class SpriteBehaviour : MonoBehaviour
     public Transform GroundCheck;
     public int gameState = 0;
     private float originalGravityScale;
+    public float jumpAmount;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        RB2D = GetComponent<Rigidbody2D>();
+        RB2D = GetComponent<Rigidbody2D>();  
         originalGravityScale = RB2D.gravityScale;
-
-
     }
 
     // Update is called once per frame
@@ -28,7 +28,6 @@ public class SpriteBehaviour : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             gameState = 0;
-      
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
@@ -57,23 +56,32 @@ public class SpriteBehaviour : MonoBehaviour
             
         }
 
-        if (gameState == 0){
-            if (Input.GetKeyDown(KeyCode.W))
+        if (gameState == 0)
+        {
+            jumpAmount = 1;
+            if (Input.GetKeyDown(KeyCode.W) && isGrounded)
             {
-                StartCoroutine(InvertGravityForSeconds(-1, 2f));
+                StartCoroutine(InvertGravityForSeconds(-0.5f, 2f));
+
             }
+             
         }
         else if (gameState == 1)
         {
-
+            if (Input.GetKeyDown(KeyCode.W) && isGrounded)
+            {
+                jumpAmount = 1.5f;
+                Jump();
+            }
+            jumpAmount = 1;
         }
         else if (gameState == 2)
         {
-
+            jumpAmount = 0; 
         }
         else if (gameState == 3)
         {
-
+            jumpAmount= 1;
         }
 
     }
@@ -90,14 +98,8 @@ public class SpriteBehaviour : MonoBehaviour
         RB2D.gravityScale = originalGravityScale;
     }
 
-    //IEnumerator WaitForFunction(int num)
-    //{
-    //    yield return new WaitForSeconds(num);
-    //    confirm = true;
-    //}
-
     private void Jump()
     {
-        RB2D.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+        RB2D.AddForce(new Vector2(0, jumpForce * jumpAmount), ForceMode2D.Impulse);
     }
 }

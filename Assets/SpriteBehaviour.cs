@@ -10,7 +10,7 @@ public class SpriteBehaviour : MonoBehaviour
     public bool isGrounded;
     public Transform GroundCheck;
     public int gameState = 0;
-    private float originalGravityScale;
+    private float originalGravityScale, originalSpeed;
     public float jumpAmount;
 
 
@@ -19,6 +19,7 @@ public class SpriteBehaviour : MonoBehaviour
     {
         RB2D = GetComponent<Rigidbody2D>();  
         originalGravityScale = RB2D.gravityScale;
+        originalSpeed = 10;
     }
 
     // Update is called once per frame
@@ -61,7 +62,7 @@ public class SpriteBehaviour : MonoBehaviour
             jumpAmount = 1;
             if (Input.GetKeyDown(KeyCode.W) && isGrounded)
             {
-                StartCoroutine(InvertGravityForSeconds(-0.5f, 2f));
+                StartCoroutine(IncreaseSpeedForSeconds(30f, 2f));
 
             }
              
@@ -82,9 +83,26 @@ public class SpriteBehaviour : MonoBehaviour
         else if (gameState == 3)
         {
             jumpAmount= 1;
+            if (Input.GetKeyDown(KeyCode.W) && isGrounded)
+            {
+                StartCoroutine(InvertGravityForSeconds(-0.5f, 2f));
+
+            }
         }
 
     }
+
+    IEnumerator IncreaseSpeedForSeconds(float speed, float duration)
+    {
+        
+        xSpeed = speed;
+
+
+        yield return new WaitForSeconds(duration);
+    
+        xSpeed = originalSpeed;
+    }
+    
 
     IEnumerator InvertGravityForSeconds(float invertedGravity, float duration)
     {
